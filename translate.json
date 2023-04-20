@@ -1,13 +1,16 @@
 {
   "log": {
+    "unknown": "Unknown letter",
     "already_chose": "Already choose this letter.",
     "correct": "Correct letter",
     "incorrect": "Incorrect letter"
   },
   "lang1": {
-    "word": "French word:"
+    "word": "French word:",
+    "word_x": "120"
   },
   "lang2": {
-    "word": "Dutch word:"
+    "word": "Dutch word:",
+    "word_x": "110"
   }
 }
