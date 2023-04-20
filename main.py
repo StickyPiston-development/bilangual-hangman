@@ -9,6 +9,9 @@ with open("words.json", "r", encoding='utf-8') as words:
     solution = random.choice(list(wordList.items()))
     print(solution)
 
+with open("translate.json", "r", encoding='utf-8') as translate:
+    translations = json.load(translate)
+
 
 def is_ascii(s):
     return all(ord(c) < 128 for c in s)
@@ -24,9 +27,10 @@ class Hangman:
         self.win = GraphWin("Hangman", 800, 600)
         self.win.setBackground("#121212")
 
-        text = Text(Point(70, 420), "word: ").draw(self.win)
+        text = Text(Point(70, 420), translations["lang1"]["word"]).draw(self.win)
         text.setOutline("white")
         text.setSize(24)
+
         p = 10
         self.DisplayWord1 = []
         for i in solution[0]:
@@ -38,7 +42,7 @@ class Hangman:
                 text.setOutline("white")
                 text.setSize(24)
 
-        text = Text(Point(70, 500), "word: ").draw(self.win)
+        text = Text(Point(70, 500), translations["lang2"]["word"]).draw(self.win)
         text.setOutline("white")
         text.setSize(24)
         p = 10
@@ -189,27 +193,18 @@ class Hangman:
 
 def main():
     hangman = Hangman()
-    """
-    hangman.pole()
-    hangman.head()
-    hangman.chest()
-    hangman.arm_left()
-    hangman.arm_right()
-    hangman.leg_left()
-    hangman.leg_right()
-    hangman.display_word()
-    """
 
     lives = 8
     hangman.display_word()
     while lives != 0:
         letter = hangman.win.getKey().lower()
         if letter in guessed:
-            print("You did already choose this item.")
+            print(translations["log"]["already_chose"])
         elif letter in strip_accents(solution[0]) or letter in strip_accents(solution[1]):
+            print(translations["log"]["correct"])
             guessed.append(letter)
         else:
-            print("Wrong letter")
+            print(translations["log"]["incorrect"])
             guessed.append(letter)
             lives -= 1
 

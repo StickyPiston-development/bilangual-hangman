@@ -1,0 +1,13 @@
+{
+  "log": {
+    "already_chose": "Already choose this letter.",
+    "correct": "Correct letter",
+    "incorrect": "Incorrect letter"
+  },
+  "lang1": {
+    "word": "French word:"
+  },
+  "lang2": {
+    "word": "Dutch word:"
+  }
+}
