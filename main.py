@@ -6,8 +6,7 @@ guessed = []
 
 with open("words.json", "r", encoding='utf-8') as words:
     wordList = json.load(words)
-    solution = random.choice(list(wordList.items()))[0]
-    print(wordList)
+    solution = random.choice(list(wordList.items()))
     print(solution)
 
 
@@ -24,20 +23,36 @@ class Hangman:
     def __init__(self):
         self.win = GraphWin("Hangman", 800, 600)
         self.win.setBackground("#121212")
-        text = Text(Point(70, 530), "word: ").draw(self.win)
+
+        text = Text(Point(70, 420), "word: ").draw(self.win)
         text.setOutline("white")
         text.setSize(24)
-
         p = 10
-        self.DisplayWord = []
-        for i in solution:
+        self.DisplayWord1 = []
+        for i in solution[0]:
             p += 25
             if i == " " or not i.isalpha():
                 pass
             else:
-                text = Text(Point(p, 570), "_").draw(self.win)
+                text = Text(Point(p, 450), "_").draw(self.win)
                 text.setOutline("white")
                 text.setSize(24)
+
+        text = Text(Point(70, 500), "word: ").draw(self.win)
+        text.setOutline("white")
+        text.setSize(24)
+        p = 10
+        self.DisplayWord2 = []
+        for i in solution[1]:
+            p += 25
+            if i == " " or not i.isalpha():
+                pass
+            else:
+                text = Text(Point(p, 530), "_").draw(self.win)
+                text.setOutline("white")
+                text.setSize(24)
+
+        self.DisplayGuessed = []
 
     def pole(self):
         p1 = Point(700, 600)
@@ -66,7 +81,7 @@ class Hangman:
         Oval(p1, p2).draw(self.win).setOutline("white")
 
     def arm_left(self):
-        p1 = Point(570, 290)
+        p1 = Point(530, 290)
         p2 = Point(600, 440)
         Oval(p1, p2).draw(self.win).setOutline("white")
 
@@ -86,43 +101,91 @@ class Hangman:
         Oval(p1, p2).draw(self.win).setOutline("white")
 
     def display_word(self):
-        for i in self.DisplayWord:
+        for i in self.DisplayWord1:
             i.undraw()
-        self.DisplayWord = []
+        self.DisplayWord1 = []
         p = 10
-        for i in solution:
+        for i in solution[0]:
             p += 25
             if i == " ":
                 pass
             elif strip_accents(i) in guessed or not i.isalpha():
-                self.DisplayWord.append(Text(Point(p, 570), i).draw(self.win))
-                self.DisplayWord[len(self.DisplayWord) - 1].setOutline("white")
-                self.DisplayWord[len(self.DisplayWord) - 1].setSize(24)
+                self.DisplayWord1.append(Text(Point(p, 450), i).draw(self.win))
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("white")
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(24)
+        for i in self.DisplayWord2:
+            i.undraw()
+        self.DisplayWord2 = []
+        p = 10
+        for i in solution[1]:
+            p += 25
+            if i == " ":
+                pass
+            elif strip_accents(i) in guessed or not i.isalpha():
+                self.DisplayWord2.append(Text(Point(p, 530), i).draw(self.win))
+                self.DisplayWord2[len(self.DisplayWord2) - 1].setOutline("white")
+                self.DisplayWord2[len(self.DisplayWord2) - 1].setSize(24)
+
+    def display_guessed(self):
+        for i in self.DisplayGuessed:
+            i.undraw()
+        self.DisplayGuessed = []
+        p = 10
+        for i in guessed:
+            p += 25
+            if i == " ":
+                pass
+            color = "green" if i in strip_accents(solution[0] + solution[1]) else "red"
+            self.DisplayGuessed.append(Text(Point(p, 570), i).draw(self.win))
+            self.DisplayGuessed[len(self.DisplayGuessed) - 1].setOutline(color)
+            self.DisplayGuessed[len(self.DisplayGuessed) - 1].setSize(24)
 
     def defeat(self):
         p = 10
-        for i in solution:
+        for i in solution[0]:
             p += 25
             if i == " ":
                 pass
             elif not strip_accents(i) in guessed:
                 time.sleep(0.2)
-                self.DisplayWord.append(Text(Point(p, 570), i).draw(self.win))
-                self.DisplayWord[len(self.DisplayWord) - 1].setOutline("red")
-                self.DisplayWord[len(self.DisplayWord) - 1].setSize(24)
+                self.DisplayWord1.append(Text(Point(p, 450), i).draw(self.win))
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("red")
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(24)
+        p = 10
+        for i in solution[1]:
+            p += 25
+            if i == " ":
+                pass
+            elif not strip_accents(i) in guessed:
+                time.sleep(0.2)
+                self.DisplayWord1.append(Text(Point(p, 530), i).draw(self.win))
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("red")
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(24)
+        time.sleep(1)
 
     def success(self):
         p = 10
-        for i in solution:
+        for i in solution[0]:
             p += 25
             if i == " ":
                 pass
             else:
                 time.sleep(0.2)
-                self.DisplayWord.append(Text(Point(p, 570), i).draw(self.win))
-                self.DisplayWord[len(self.DisplayWord) - 1].setOutline("green")
-                self.DisplayWord[len(self.DisplayWord) - 1].setSize(24)
+                self.DisplayWord1.append(Text(Point(p, 450), i).draw(self.win))
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("green")
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(24)
+        p = 10
+        for i in solution[1]:
+            p += 25
+            if i == " ":
+                pass
+            else:
+                time.sleep(0.2)
+                self.DisplayWord1.append(Text(Point(p, 530), i).draw(self.win))
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("green")
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(24)
         time.sleep(1)
+
 
 def main():
     hangman = Hangman()
@@ -143,8 +206,7 @@ def main():
         letter = hangman.win.getKey().lower()
         if letter in guessed:
             print("You did already choose this item.")
-        elif letter in solution:
-            print(letter)
+        elif letter in strip_accents(solution[0]) or letter in strip_accents(solution[1]):
             guessed.append(letter)
         else:
             print("Wrong letter")
@@ -152,14 +214,20 @@ def main():
             lives -= 1
 
         hangman.display_word()
+        hangman.display_guessed()
 
         counter = 0
-        for i in solution:
-            if i in guessed or not i.isalpha():
+        for i in solution[0]:
+            if strip_accents(i) in guessed or not i.isalpha():
                 counter += 1
-        if counter == len(solution):
-            hangman.success()
-            break
+        if counter == len(solution[0]):
+            counter = 0
+            for i in solution[1]:
+                if strip_accents(i) in guessed or not i.isalpha():
+                    counter += 1
+            if counter == len(solution[1]):
+                hangman.success()
+                break
 
         match lives:
             case 7:
@@ -178,8 +246,6 @@ def main():
                 hangman.leg_right()
             case 0:
                 hangman.defeat()
-        print(guessed)
-        print(lives)
 
 
 main()
