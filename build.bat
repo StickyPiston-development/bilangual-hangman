@@ -1,0 +1,1 @@
+pyinstaller --noconfirm --onefile --windowed --icon "./hangman.ico" --add-data "./translate.json;." --add-data "./words.json;."  "./main.py"
