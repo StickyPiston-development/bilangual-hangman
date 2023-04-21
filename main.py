@@ -1,8 +1,12 @@
 import json, random, unicodedata
-
+from tkinter import PhotoImage
 import graphics
 from graphics import *
 import random, time
+
+# DECLARATIONS
+width = 800
+height = 600
 
 
 def resource_path(relative_path):
@@ -14,9 +18,11 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-
-with open(resource_path("translate.json"), "r", encoding='utf-8') as translate:
-    translations = json.load(translate)
+try:
+    with open(resource_path("assets/translate.json"), "r", encoding='utf-8') as translate:
+        translations = json.load(translate)
+except Exception:
+    input()
 
 
 def is_ascii(s):
@@ -29,20 +35,35 @@ def strip_accents(s):
 
 
 class Hangman:
-    def __init__(self, solution):
-        self.win = GraphWin("Hangman", 800, 600)
+    def __init__(self, solution, pos):
+        self.win = GraphWin("Hangman", width, height)
         self.win.setBackground("#121212")
+
+        # Set position to middle
+        if pos == "None":
+            x = self.win.winfo_screenwidth() // 2 - width // 2
+            y = self.win.winfo_screenheight() // 2 - height // 2
+            self.win.master.geometry(f"{width}x{height}+{x}+{y}")
+        else:
+            self.win.master.geometry(pos)
+
+        self.textsize = 16 if os.name == "posix" else 24
+
+        # Fix icon
+        img = PhotoImage(file=resource_path('assets/hangman.png'), master=self.win.master)
+        self.win.master.iconphoto(False, img)
+        self.win.master.wm_iconphoto(False, img)
 
         self.solution = solution
         self.guessed = []
 
         self.scoreDisplay = Text(Point(50, 50), 0).draw(self.win)
         self.scoreDisplay.setOutline("white")
-        self.scoreDisplay.setSize(24)
+        self.scoreDisplay.setSize(self.textsize)
 
         text = Text(Point(translations["lang1"]["word_x"], 420), translations["lang1"]["word"]).draw(self.win)
         text.setOutline("white")
-        text.setSize(24)
+        text.setSize(self.textsize)
 
         p = 10
         self.DisplayWord1 = []
@@ -53,11 +74,11 @@ class Hangman:
             else:
                 text = Text(Point(p, 450), "_").draw(self.win)
                 text.setOutline("white")
-                text.setSize(24)
+                text.setSize(self.textsize)
 
         text = Text(Point(translations["lang2"]["word_x"], 500), translations["lang2"]["word"]).draw(self.win)
         text.setOutline("white")
-        text.setSize(24)
+        text.setSize(self.textsize)
         p = 10
         self.DisplayWord2 = []
         for i in solution[1]:
@@ -67,7 +88,7 @@ class Hangman:
             else:
                 text = Text(Point(p, 530), "_").draw(self.win)
                 text.setOutline("white")
-                text.setSize(24)
+                text.setSize(self.textsize)
 
         self.DisplayGuessed = []
 
@@ -129,7 +150,7 @@ class Hangman:
             elif strip_accents(i) in self.guessed or not i.isalpha():
                 self.DisplayWord1.append(Text(Point(p, 450), i).draw(self.win))
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("white")
-                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(24)
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(self.textsize)
         for i in self.DisplayWord2:
             i.undraw()
         self.DisplayWord2 = []
@@ -141,7 +162,7 @@ class Hangman:
             elif strip_accents(i) in self.guessed or not i.isalpha():
                 self.DisplayWord2.append(Text(Point(p, 530), i).draw(self.win))
                 self.DisplayWord2[len(self.DisplayWord2) - 1].setOutline("white")
-                self.DisplayWord2[len(self.DisplayWord2) - 1].setSize(24)
+                self.DisplayWord2[len(self.DisplayWord2) - 1].setSize(self.textsize)
 
     def display_guessed(self):
         for i in self.DisplayGuessed:
@@ -155,7 +176,7 @@ class Hangman:
             color = "green" if i in strip_accents(self.solution[0] + self.solution[1]) else "red"
             self.DisplayGuessed.append(Text(Point(p, 570), i).draw(self.win))
             self.DisplayGuessed[len(self.DisplayGuessed) - 1].setOutline(color)
-            self.DisplayGuessed[len(self.DisplayGuessed) - 1].setSize(24)
+            self.DisplayGuessed[len(self.DisplayGuessed) - 1].setSize(self.textsize)
 
     def defeat(self):
         p = 10
@@ -167,7 +188,7 @@ class Hangman:
                 time.sleep(0.2)
                 self.DisplayWord1.append(Text(Point(p, 450), i).draw(self.win))
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("red")
-                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(24)
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(self.textsize)
         p = 10
         for i in self.solution[1]:
             p += 25
@@ -177,7 +198,7 @@ class Hangman:
                 time.sleep(0.2)
                 self.DisplayWord1.append(Text(Point(p, 530), i).draw(self.win))
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("red")
-                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(24)
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(self.textsize)
         time.sleep(1)
 
     def success(self):
@@ -190,7 +211,7 @@ class Hangman:
                 time.sleep(0.2)
                 self.DisplayWord1.append(Text(Point(p, 450), i).draw(self.win))
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("green")
-                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(24)
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(self.textsize)
         p = 10
         for i in self.solution[1]:
             p += 25
@@ -200,23 +221,26 @@ class Hangman:
                 time.sleep(0.2)
                 self.DisplayWord1.append(Text(Point(p, 530), i).draw(self.win))
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("green")
-                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(24)
+                self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(self.textsize)
         time.sleep(1)
 
     def update_score(self, score):
         self.scoreDisplay.undraw()
         self.scoreDisplay = Text(Point(50, 50), score).draw(self.win)
         self.scoreDisplay.setOutline("white")
-        self.scoreDisplay.setSize(24)
+        self.scoreDisplay.setSize(self.textsize)
+
+    def get_pos(self):
+        return self.win.master.geometry()
 
 
-def game(score):
-    with open(resource_path("words.json"), "r", encoding='utf-8') as words:
+def game(score, pos):
+    with open(resource_path("assets/words.json"), "r", encoding='utf-8') as words:
         wordList = json.load(words)
         solution = random.choice(list(wordList.items()))
         print(solution)
 
-    hangman = Hangman(solution)
+    hangman = Hangman(solution, pos)
     hangman.update_score(score)
 
     lives = 6
@@ -249,8 +273,9 @@ def game(score):
                     counter += 1
             if counter == len(solution[1]):
                 hangman.success()
+                pos = hangman.get_pos()
                 hangman.win.close()
-                return True
+                return [True, pos]
 
         match lives:
             case 5:
@@ -267,18 +292,26 @@ def game(score):
                 hangman.leg_right()
             case 0:
                 hangman.defeat()
+                pos = hangman.get_pos()
                 hangman.win.close()
-                return False
+                return [False, pos]
 
 
 def main():
     score = 0
+    pos = "None"
+
     while True:
         try:
-            if game(score):
+            game_results = game(score, pos)
+            pos = game_results[1]
+            print(pos, game_results[1])
+
+            if game_results[0]:
                 score += 10
             else:
                 score -= 5
+
         except graphics.GraphicsError:
             break
     print(f"Score: {score}")
