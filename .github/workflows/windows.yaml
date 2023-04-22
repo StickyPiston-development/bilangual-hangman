@@ -26,8 +26,7 @@ jobs:
 
     - name: build with pyinstaller
       run: |
-        cd src
-        build.bat
+        ./src/build.bat
 
     - uses: actions/upload-artifact@v2
       with:
