@@ -27,7 +27,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='main',
+    name='bilingual-hangman',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
