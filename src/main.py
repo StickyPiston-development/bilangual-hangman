@@ -49,10 +49,10 @@ if "--games" in sys.argv:
     try:
         games = int(sys.argv[sys.argv.index("--games") + 1])
     except IndexError:
-        print("Invalid game amount")
+        print("Invalid game amount: None found")
         sys.exit(1)
     except ValueError:
-        print("Invalid game amount")
+        print(f"Invalid game amount: {sys.argv[sys.argv.index('--games') + 1]}")
         sys.exit(1)
 
 class Hangman:
@@ -258,7 +258,7 @@ class Hangman:
 def game(score, pos):
     solution = random.choice(list(wordList.items()))
     if debug:
-        print(solution)
+        print(f"solution: {solution}")
 
     hangman = Hangman(solution, pos)
     hangman.update_score(score)
@@ -280,7 +280,7 @@ def game(score, pos):
             lives -= 1
 
         if debug:
-            print(message)
+            print(f"{message}: {letter}")
 
         hangman.display_word()
         hangman.display_guessed()
@@ -323,39 +323,51 @@ def game(score, pos):
 def main():
     score = 0
     pos = "None"
+    gameCount = 0
 
     if games == "INFINITE":
         while True:
             try:
+                if debug:
+                    print(f"=== NEW GAME ===\ngame: {gameCount + 1}")
+
                 game_results = game(score, pos)
                 pos = game_results[1]
                 if debug:
-                    print(pos, game_results[1])
+                    print(f"gui position: {pos}")
 
                 if game_results[0]:
                     score += 10
                 else:
                     score -= 5
+
+                gameCount += 1
 
             except GraphicsError:
                 break
     else:
-        for i in range(games):
+        for gameCount in range(games):
             try:
+                if debug:
+                    print(f"=== NEW GAME ===\ngame {gameCount + 1}")
+
                 game_results = game(score, pos)
                 pos = game_results[1]
-                if debug:
-                    print(pos, game_results[1])
 
                 if game_results[0]:
                     score += 10
+                    message = "game won"
                 else:
                     score -= 5
+                    message = "game lost"
+
+                if debug:
+                    print(f"{message}\ngui position: {pos}")
 
             except GraphicsError:
                 break
     if debug:
-        print(f"Score: {score}")
+        print(f"score: {score} in {gameCount + 1} games ({score/(gameCount+1)/10})")
 
 
 if __name__ == "__main__":
