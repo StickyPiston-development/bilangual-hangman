@@ -1,6 +1,6 @@
 import json, random, unicodedata
+import sys
 from tkinter import PhotoImage
-import graphics
 from graphics import *
 import random, time
 
@@ -18,12 +18,6 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-try:
-    with open(resource_path("assets/translate.json"), "r", encoding='utf-8') as translate:
-        translations = json.load(translate)
-except Exception:
-    input()
-
 
 def is_ascii(s):
     return all(ord(c) < 128 for c in s)
@@ -33,6 +27,33 @@ def strip_accents(s):
     return ''.join(c for c in unicodedata.normalize('NFD', s)
                    if unicodedata.category(c) != 'Mn')
 
+
+try:
+    # Load in translations
+    with open(resource_path("assets/translate.json"), "r", encoding='utf-8') as translate:
+        translations = json.load(translate)
+    # Load in word list
+    with open(resource_path("assets/words.json"), "r", encoding='utf-8') as words:
+        wordList = json.load(words)
+except FileNotFoundError:
+    print("Config files not found")
+    sys.exit(1)
+
+# Process command line args
+debug = False
+games = "INFINITE"
+
+if "--debug" in sys.argv:
+    debug = True
+if "--games" in sys.argv:
+    try:
+        games = int(sys.argv[sys.argv.index("--games") + 1])
+    except IndexError:
+        print("Invalid game amount")
+        sys.exit(1)
+    except ValueError:
+        print("Invalid game amount")
+        sys.exit(1)
 
 class Hangman:
     def __init__(self, solution, pos):
@@ -235,9 +256,8 @@ class Hangman:
 
 
 def game(score, pos):
-    with open(resource_path("assets/words.json"), "r", encoding='utf-8') as words:
-        wordList = json.load(words)
-        solution = random.choice(list(wordList.items()))
+    solution = random.choice(list(wordList.items()))
+    if debug:
         print(solution)
 
     hangman = Hangman(solution, pos)
@@ -248,16 +268,19 @@ def game(score, pos):
     while lives != 0:
         letter = hangman.win.getKey().lower()
         if len(letter) != 1:
-            print(translations["log"]["unknown"])
+            message = translations["log"]["unknown"]
         elif letter in hangman.guessed:
-            print(translations["log"]["already_chose"])
+            message = translations["log"]["already_chose"]
         elif letter in strip_accents(solution[0]) or letter in strip_accents(solution[1]):
-            print(translations["log"]["correct"])
+            message = translations["log"]["correct"]
             hangman.guessed.append(letter)
         else:
-            print(translations["log"]["incorrect"])
+            message = translations["log"]["incorrect"]
             hangman.guessed.append(letter)
             lives -= 1
+
+        if debug:
+            print(message)
 
         hangman.display_word()
         hangman.display_guessed()
@@ -301,20 +324,40 @@ def main():
     score = 0
     pos = "None"
 
-    while True:
-        try:
-            game_results = game(score, pos)
-            pos = game_results[1]
-            print(pos, game_results[1])
+    if games == "INFINITE":
+        while True:
+            try:
+                game_results = game(score, pos)
+                pos = game_results[1]
+                if debug:
+                    print(pos, game_results[1])
 
-            if game_results[0]:
-                score += 10
-            else:
-                score -= 5
+                if game_results[0]:
+                    score += 10
+                else:
+                    score -= 5
 
-        except graphics.GraphicsError:
-            break
-    print(f"Score: {score}")
+            except GraphicsError:
+                break
+    else:
+        for i in range(games):
+            try:
+                game_results = game(score, pos)
+                pos = game_results[1]
+                if debug:
+                    print(pos, game_results[1])
+
+                if game_results[0]:
+                    score += 10
+                else:
+                    score -= 5
+
+            except GraphicsError:
+                break
+    if debug:
+        print(f"Score: {score}")
 
 
-main()
+if __name__ == "__main__":
+    main()
+    sys.exit(0)
