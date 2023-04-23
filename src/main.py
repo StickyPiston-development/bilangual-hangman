@@ -148,11 +148,9 @@ class HangmanMenu:
                     if debug:
                         print("Clicked on exitbutton")
                     self.win.close()
-                    exit()
+                    sys.exit()
             except GraphicsError:
-                exit()
-    def exit(self):
-        self.win.close()
+                sys.exit()
 
 
 class Hangman:
