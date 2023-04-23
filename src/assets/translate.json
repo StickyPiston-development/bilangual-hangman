@@ -12,5 +12,13 @@
   "lang2": {
     "word": "Dutch word:",
     "word_x": "110"
+  },
+  "gui": {
+    "menuName": "Hangman Menu",
+    "gameName": "Game [GAME] - Hangman",
+    "playButtonText": "Play Hangman",
+    "exitButtonText": "Quit Hangman",
+    "score": "Score",
+    "games": "Games"
   }
 }

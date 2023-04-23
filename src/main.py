@@ -28,6 +28,7 @@ def strip_accents(s):
                    if unicodedata.category(c) != 'Mn')
 
 
+# Load in config
 try:
     # Load in translations
     with open(resource_path("assets/translate.json"), "r", encoding='utf-8') as translate:
@@ -55,9 +56,108 @@ if "--games" in sys.argv:
         print(f"Invalid game amount: {sys.argv[sys.argv.index('--games') + 1]}")
         sys.exit(1)
 
-class Hangman:
-    def __init__(self, solution, pos):
+
+class HangmanMenu:
+    def __init__(self, pos, gameCount=0, score=0):
         self.win = GraphWin("Hangman", width, height)
+        self.win.setBackground("#121212")
+
+        self.games = gameCount
+        self.score = score
+
+        self.scoreDisplay = None
+
+        self.playbutton = None
+        self.playbuttontext = None
+        self.exitbutton = None
+        self.exitbuttontext = None
+
+        # Set position to middle
+        if pos == "None":
+            x = self.win.winfo_screenwidth() // 2 - width // 2
+            y = self.win.winfo_screenheight() // 2 - height // 2
+            self.win.master.geometry(f"{width}x{height}+{x}+{y}")
+        else:
+            self.win.master.geometry(pos)
+
+        self.textsize = 16 if os.name == "posix" else 24
+
+        # Fix icon
+        img = PhotoImage(file=resource_path('assets/hangman.png'), master=self.win.master)
+        self.win.master.iconphoto(False, img)
+        self.win.master.wm_iconphoto(False, img)
+
+        self.build_gui()
+        self.listen_click()
+
+    def build_gui(self):
+        if debug:
+            print("Building main menu")
+
+        title = Text(Point(width / 2, 50), translations["gui"]["menuName"]).draw(self.win)
+        title.setOutline("white")
+        title.setSize(self.textsize)
+        if self.games == 0:
+            self.playbutton = Rectangle(Point(width / 2 - 100, 100), Point(width / 2 + 100, 150)).draw(self.win)
+            self.playbutton.setOutline("white")
+            self.playbuttontext = Text(Point(width / 2, 125), translations["gui"]["playButtonText"]).draw(self.win)
+            self.playbuttontext.setOutline("white")
+
+            self.exitbutton = Rectangle(Point(width / 2 - 100, 170), Point(width / 2 + 100, 225)).draw(self.win)
+            self.exitbutton.setOutline("white")
+            self.exitbuttontext = Text(Point(width / 2, 200), translations["gui"]["exitButtonText"]).draw(self.win)
+            self.exitbuttontext.setOutline("white")
+
+        else:
+            self.scoreDisplay = Text(Point(width / 2, 100), f"""{translations["gui"]["score"]}: {self.score}""").draw(self.win)
+            self.scoreDisplay.setOutline("white")
+            self.scoreDisplay.setSize(self.textsize)
+
+            self.scoreDisplay = Text(Point(width / 2, 150), f"""{translations["gui"]["games"]}: {self.games}""").draw(self.win)
+            self.scoreDisplay.setOutline("white")
+            self.scoreDisplay.setSize(self.textsize)
+
+            self.playbutton = Rectangle(Point(width / 2 - 100, 175), Point(width / 2 + 100, 225)).draw(self.win)
+            self.playbutton.setOutline("white")
+            self.playbuttontext = Text(Point(width / 2, 200), translations["gui"]["playButtonText"]).draw(self.win)
+            self.playbuttontext.setOutline("white")
+
+            self.exitbutton = Rectangle(Point(width / 2 - 100, 250), Point(width / 2 + 100, 300)).draw(self.win)
+            self.exitbutton.setOutline("white")
+            self.exitbuttontext = Text(Point(width / 2, 275), translations["gui"]["exitButtonText"]).draw(self.win)
+            self.exitbuttontext.setOutline("white")
+
+    def listen_click(self):
+        while True:
+            try:
+                click = self.win.getMouse()
+                ll = self.playbutton.getP1()
+                ur = self.playbutton.getP2()
+
+                if ll.getX() < click.getX() < ur.getX() and ll.getY() < click.getY() < ur.getY():
+                    if debug:
+                        print("Clicked on playbutton")
+                    pos = self.win.master.geometry()
+                    self.win.close()
+                    main(pos)
+
+                ll = self.exitbutton.getP1()
+                ur = self.exitbutton.getP2()
+
+                if ll.getX() < click.getX() < ur.getX() and ll.getY() < click.getY() < ur.getY():
+                    if debug:
+                        print("Clicked on exitbutton")
+                    self.win.close()
+                    exit()
+            except GraphicsError:
+                exit()
+    def exit(self):
+        self.win.close()
+
+
+class Hangman:
+    def __init__(self, solution, pos, gameCount):
+        self.win = GraphWin(translations["gui"]["gameName"].replace("[GAME]", str(gameCount)), width, height)
         self.win.setBackground("#121212")
 
         # Set position to middle
@@ -255,12 +355,12 @@ class Hangman:
         return self.win.master.geometry()
 
 
-def game(score, pos):
+def game(score, pos, gameCount):
     solution = random.choice(list(wordList.items()))
     if debug:
         print(f"solution: {solution}")
 
-    hangman = Hangman(solution, pos)
+    hangman = Hangman(solution, pos, gameCount)
     hangman.update_score(score)
 
     lives = 6
@@ -320,9 +420,8 @@ def game(score, pos):
                 return [False, pos]
 
 
-def main():
+def main(pos="None"):
     score = 0
-    pos = "None"
     gameCount = 0
 
     if games == "INFINITE":
@@ -331,7 +430,7 @@ def main():
                 if debug:
                     print(f"=== NEW GAME ===\ngame: {gameCount + 1}")
 
-                game_results = game(score, pos)
+                game_results = game(score, pos, gameCount + 1)
                 pos = game_results[1]
                 if debug:
                     print(f"gui position: {pos}")
@@ -344,6 +443,7 @@ def main():
                 gameCount += 1
 
             except GraphicsError:
+                HangmanMenu(pos, gameCount, score)
                 break
     else:
         for gameCount in range(games):
@@ -351,7 +451,7 @@ def main():
                 if debug:
                     print(f"=== NEW GAME ===\ngame {gameCount + 1}")
 
-                game_results = game(score, pos)
+                game_results = game(score, pos, gameCount + 1)
                 pos = game_results[1]
 
                 if game_results[0]:
@@ -365,11 +465,12 @@ def main():
                     print(f"{message}\ngui position: {pos}")
 
             except GraphicsError:
+                HangmanMenu(pos, gameCount, score)
                 break
     if debug:
-        print(f"score: {score} in {gameCount + 1} games ({score/(gameCount+1)/10})")
+        print(f"score: {score} in {gameCount + 1} games ({score / (gameCount + 1) / 10})")
 
 
 if __name__ == "__main__":
-    main()
+    HangmanMenu("None", 0, 0)
     sys.exit(0)
