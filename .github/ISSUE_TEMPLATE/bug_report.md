@@ -19,7 +19,7 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-** Environment (please complete the following information):**
+**Environment (please complete the following information):**
  - OS: [e.g. Ubuntu 23.04.3 lts]
  - Program version [e.g. 0.1]
 
