@@ -1,1 +1,1 @@
-pyinstaller --noconfirm --onefile --windowed --icon "./assets/hangman.ico" --add-data="./assets:assets/"  "./main.py"
+pyinstaller --noconfirm --onefile --windowed --add-data="./assets:assets/"  "./main.py"
