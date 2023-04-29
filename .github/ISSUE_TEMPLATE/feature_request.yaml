@@ -1,5 +1,5 @@
 name: Feature Request
-description: template for missing feature
+description: Request new features or enhancements 
 title: '[Feature Request]: '
 body:
   - type: textarea

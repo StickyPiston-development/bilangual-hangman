@@ -1,5 +1,5 @@
 name: Bug report
-description: Something is not working properly.
+description: Report bugs or glitches to us
 title: '[Bug]: '
 body:
   - type: checkboxes
