@@ -23,7 +23,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
   - [Improving The Documentation](#improving-the-documentation)
 - [Styleguides](#styleguides)
   - [Commit Messages](#commit-messages)
-- [Join The Project Team](#join-the-project-team)
+
 
 
 
@@ -112,10 +112,17 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/Sticky
 - **Explain why this enhancement would be useful** to most Bilingual-Hangman users. You may also want to point out the other projects that solved it better and which could serve as inspiration.
 
 ### Your First Code Contribution
-<!-- TODO
-include Setup of env, IDE and typical getting started instructions?
--->
-todo
+**os**  
+Most development is done on linux, but it does not really matter which operating system you choose, unless you use a operating system that is not supported by the program.
+
+**ide**  
+For python in general is [PyCharm](https://www.jetbrains.com/pycharm/download/) the best ide. The main features are for python, but there is also support for other languages. PyCharm has a free [open source](https://github.com/JetBrains/intellij-community/tree/master/python) community version and a "Pro" version. The pro version is not necessary. 
+
+**Getting started**  
+Open PyCharm and click on "clone from vcs". Enter `https://github.com/StickyPiston-development/bilingual-hangman.git` as url. Wait for the repository to be cloned and the skeletons to be build. Then click on "Download shared indexes" for a faster execution. You can look at the [issues](https://github.com/StickyPiston-development/bilingual-hangman/issues) for ideas to code. Once you have coded a feature/ solved a bug you can create a [pull request](https://www.jetbrains.com/help/pycharm/work-with-github-pull-requests.html)
+
+
+
 
 ### Improving The Documentation
 <!-- TODO
