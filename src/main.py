@@ -58,12 +58,19 @@ if "--games" in sys.argv:
 
 
 class HangmanMenu:
-    def __init__(self, pos, gameCount=0, score=0):
+    def __init__(self, pos, gameCount=0, score=0, showButtons=True):
+        if not games == "INFINITE" and showButtons:
+            main()
+            return
+        if gameCount == 0 and not games == "INFINITE":
+            return
+
         self.win = GraphWin("Hangman", width, height)
         self.win.setBackground("#121212")
 
         self.games = gameCount
         self.score = score
+        self.showbuttons = showButtons
 
         self.scoreDisplay = None
 
@@ -109,23 +116,26 @@ class HangmanMenu:
             self.exitbuttontext.setOutline("white")
 
         else:
-            self.scoreDisplay = Text(Point(width / 2, 100), f"""{translations["gui"]["score"]}: {self.score}""").draw(self.win)
+            self.scoreDisplay = Text(Point(width / 2, 100), f"""{translations["gui"]["score"]}: {self.score}""").draw(
+                self.win)
             self.scoreDisplay.setOutline("white")
             self.scoreDisplay.setSize(self.textsize)
 
-            self.scoreDisplay = Text(Point(width / 2, 150), f"""{translations["gui"]["games"]}: {self.games}""").draw(self.win)
+            self.scoreDisplay = Text(Point(width / 2, 150), f"""{translations["gui"]["games"]}: {self.games}""").draw(
+                self.win)
             self.scoreDisplay.setOutline("white")
             self.scoreDisplay.setSize(self.textsize)
 
-            self.playbutton = Rectangle(Point(width / 2 - 100, 175), Point(width / 2 + 100, 225)).draw(self.win)
-            self.playbutton.setOutline("white")
-            self.playbuttontext = Text(Point(width / 2, 200), translations["gui"]["playButtonText"]).draw(self.win)
-            self.playbuttontext.setOutline("white")
+            if self.showbuttons:
+                self.playbutton = Rectangle(Point(width / 2 - 100, 175), Point(width / 2 + 100, 225)).draw(self.win)
+                self.playbutton.setOutline("white")
+                self.playbuttontext = Text(Point(width / 2, 200), translations["gui"]["playButtonText"]).draw(self.win)
+                self.playbuttontext.setOutline("white")
 
-            self.exitbutton = Rectangle(Point(width / 2 - 100, 250), Point(width / 2 + 100, 300)).draw(self.win)
-            self.exitbutton.setOutline("white")
-            self.exitbuttontext = Text(Point(width / 2, 275), translations["gui"]["exitButtonText"]).draw(self.win)
-            self.exitbuttontext.setOutline("white")
+                self.exitbutton = Rectangle(Point(width / 2 - 100, 250), Point(width / 2 + 100, 300)).draw(self.win)
+                self.exitbutton.setOutline("white")
+                self.exitbuttontext = Text(Point(width / 2, 275), translations["gui"]["exitButtonText"]).draw(self.win)
+                self.exitbuttontext.setOutline("white")
 
     def listen_click(self):
         while True:
@@ -463,12 +473,13 @@ def main(pos="None"):
                     print(f"{message}\ngui position: {pos}")
 
             except GraphicsError:
-                HangmanMenu(pos, gameCount, score)
+                HangmanMenu(pos, gameCount, score, False)
                 break
+        HangmanMenu(pos, gameCount, score, False)
     if debug:
         print(f"score: {score} in {gameCount + 1} games ({score / (gameCount + 1) / 10})")
 
 
 if __name__ == "__main__":
-    HangmanMenu("None", 0, 0)
+    HangmanMenu("None", 0, 0, not games == "INFINITE")
     sys.exit(0)
