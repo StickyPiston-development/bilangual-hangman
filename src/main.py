@@ -95,7 +95,14 @@ class HangmanMenu:
         self.win.master.wm_iconphoto(False, img)
 
         self.build_gui()
-        self.listen_click()
+
+        if showButtons:
+            self.listen_click()
+        else:
+            try:
+                self.win.getMouse()
+            except GraphicsError:
+                exit()
 
     def build_gui(self):
         if debug:
@@ -140,7 +147,7 @@ class HangmanMenu:
     def listen_click(self):
         while True:
             try:
-                click = self.win.getMouse()
+                click = self.win.checkMouse()
                 ll = self.playbutton.getP1()
                 ur = self.playbutton.getP2()
 
@@ -159,6 +166,13 @@ class HangmanMenu:
                         print("Clicked on exitbutton")
                     self.win.close()
                     sys.exit()
+
+                if self.win.checkKey() == "escape":
+                    if debug:
+                        print(translations["log"]["exit"])
+                    self.win.close()
+                    sys.exit()
+
             except GraphicsError:
                 sys.exit()
 
@@ -375,7 +389,16 @@ def game(score, pos, gameCount):
     hangman.display_word()
     while lives != 0:
         letter = hangman.win.getKey().lower()
-        if len(letter) != 1:
+        if letter == "escape":
+            message = translations["log"]["exit"]
+            pos = hangman.get_pos()
+            hangman.win.close()
+
+            if debug:
+                print(f"{message}: {letter}")
+
+            return [pos]
+        elif len(letter) != 1:
             message = translations["log"]["unknown"]
         elif letter in hangman.guessed:
             message = translations["log"]["already_chose"]
@@ -473,7 +496,9 @@ def main(pos="None"):
                     print(f"{message}\ngui position: {pos}")
 
             except GraphicsError:
-                HangmanMenu(pos, gameCount, score, False)
+                break
+            except IndexError:
+                pos = game_results[0]
                 break
         HangmanMenu(pos, gameCount, score, False)
     if debug:

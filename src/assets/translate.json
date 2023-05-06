@@ -1,5 +1,6 @@
 {
   "log": {
+    "exit": "Escape pressed: closing gui",
     "unknown": "Unknown letter",
     "already_chose": "Already choose this letter.",
     "correct": "Correct letter",
