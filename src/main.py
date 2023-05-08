@@ -49,6 +49,8 @@ if "--debug" in sys.argv:
 if "--games" in sys.argv:
     try:
         games = int(sys.argv[sys.argv.index("--games") + 1])
+        if games <= 0:
+            raise ValueError
     except IndexError:
         print("Invalid game amount: None found")
         sys.exit(1)
@@ -59,7 +61,8 @@ if "--games" in sys.argv:
 
 class HangmanMenu:
     def __init__(self, pos, gameCount=0, score=0, showButtons=True):
-        if not games == "INFINITE" and not showButtons and score == 0:
+        print(pos, gameCount, score)
+        if not games == "INFINITE" and gameCount == 0:
             main()
             return
         # if gameCount == 0 and games != "INFINITE":
@@ -487,8 +490,8 @@ def main(pos="None"):
         HangmanMenu(pos, gameCount, score, True)
 
     else:
-        for gameCount in range(games):
-            try:
+        try:
+            for gameCount in range(games):
                 if debug:
                     print(f"=== NEW GAME ===\ngame {gameCount + 1}")
 
@@ -501,19 +504,17 @@ def main(pos="None"):
                 else:
                     score -= 5
                     message = "game lost"
-                print(score)
                 if debug:
                     print(f"{message}\ngui position: {pos}")
-
-            except GraphicsError:
-                break
-            except IndexError:
-                pos = game_results[0]
-                break
-        print(pos, gameCount + 1, score)
+            gameCount += 1
+        except GraphicsError:
+            if gameCount == 0:
+                return
+        except IndexError:
+            pos = game_results[0]
+        if debug:
+            print(f"score: {score} in {gameCount} games ({score / (gameCount)}/10.0)")
         HangmanMenu(pos, gameCount, score, False)
-    if debug:
-        print(f"score: {score} in {gameCount + 1} games ({score / (gameCount + 1) / 10})")
 
 
 if __name__ == "__main__":
