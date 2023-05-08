@@ -37,6 +37,7 @@ try:
     with open(resource_path("assets/words.json"), "r", encoding='utf-8') as words:
         wordList = json.load(words)
 except FileNotFoundError:
+    # THIS IS NOT TRANSLATED BECAUSE WE DON'T WANT A CRASH ONCE IT CANT FIND THE FILES. WE WANT THIS ERROR MESSAGE
     print("Config files not found")
     sys.exit(1)
 
@@ -52,21 +53,20 @@ if "--games" in sys.argv:
         if games <= 0:
             raise ValueError
     except IndexError:
-        print("Invalid game amount: None found")
+        print(translations["log"]["args"]["noneFound"])
         sys.exit(1)
     except ValueError:
-        print(f"Invalid game amount: {sys.argv[sys.argv.index('--games') + 1]}")
+        print(translations["log"]["args"]["invalid"].replace("[AMOUNT]", sys.argv[sys.argv.index('--games') + 1]))
         sys.exit(1)
 
 
 class HangmanMenu:
     def __init__(self, pos, gameCount=0, score=0, showButtons=True):
-        print(pos, gameCount, score)
+        if debug:
+            print(f"==== MENU ====\npos: {pos}, games: {gameCount}, score: {score}, showButtons: {showButtons}")
         if not games == "INFINITE" and gameCount == 0:
             main()
             return
-        # if gameCount == 0 and games != "INFINITE":
-        #    return
 
         self.win = GraphWin("Hangman", width, height)
         self.win.setBackground("#121212")
@@ -107,7 +107,7 @@ class HangmanMenu:
             try:
                 self.win.getMouse()
             except GraphicsError:
-                exit()
+                sys.exit()
 
     def build_gui(self):
         if debug:
@@ -472,13 +472,16 @@ def main(pos="None"):
 
                 game_results = game(score, pos, gameCount + 1)
                 pos = game_results[1]
-                if debug:
-                    print(f"gui position: {pos}")
 
                 if game_results[0]:
                     score += 10
+                    message = translations["log"]["game_won"]
                 else:
                     score -= 5
+                    message = translations["log"]["game_lost"]
+
+                if debug:
+                    print(f"{message}\ngui position: {pos}")
 
                 gameCount += 1
 
@@ -500,10 +503,10 @@ def main(pos="None"):
 
                 if game_results[0]:
                     score += 10
-                    message = "game won"
+                    message = translations["log"]["game_won"]
                 else:
                     score -= 5
-                    message = "game lost"
+                    message = translations["log"]["game_lost"]
                 if debug:
                     print(f"{message}\ngui position: {pos}")
             gameCount += 1
