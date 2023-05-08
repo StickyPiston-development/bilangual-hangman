@@ -94,6 +94,8 @@ class HangmanMenu:
         self.win.master.iconphoto(False, img)
         self.win.master.wm_iconphoto(False, img)
 
+        self.win.after(1, lambda: self.win.focus_force())
+
         self.build_gui()
 
         if self.showbuttons:
@@ -198,6 +200,8 @@ class Hangman:
         img = PhotoImage(file=resource_path('assets/hangman.png'), master=self.win.master)
         self.win.master.iconphoto(False, img)
         self.win.master.wm_iconphoto(False, img)
+
+        self.win.after(1, lambda: self.win.focus_force())
 
         self.solution = solution
         self.guessed = []
@@ -480,7 +484,7 @@ def main(pos="None"):
             except IndexError:
                 pos = game_results[0]
                 break
-        HangmanMenu(pos, gameCount + 1, score, True)
+        HangmanMenu(pos, gameCount, score, True)
 
     else:
         for gameCount in range(games):
@@ -507,7 +511,7 @@ def main(pos="None"):
                 pos = game_results[0]
                 break
         print(pos, gameCount + 1, score)
-        HangmanMenu(pos, gameCount + 1, score, False)
+        HangmanMenu(pos, gameCount, score, False)
     if debug:
         print(f"score: {score} in {gameCount + 1} games ({score / (gameCount + 1) / 10})")
 
