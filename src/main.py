@@ -59,11 +59,11 @@ if "--games" in sys.argv:
 
 class HangmanMenu:
     def __init__(self, pos, gameCount=0, score=0, showButtons=True):
-        if not games == "INFINITE" and showButtons:
+        if not games == "INFINITE" and not showButtons and score == 0:
             main()
             return
-        if gameCount == 0 and not games == "INFINITE":
-            return
+        # if gameCount == 0 and games != "INFINITE":
+        #    return
 
         self.win = GraphWin("Hangman", width, height)
         self.win.setBackground("#121212")
@@ -96,7 +96,7 @@ class HangmanMenu:
 
         self.build_gui()
 
-        if showButtons:
+        if self.showbuttons:
             self.listen_click()
         else:
             try:
@@ -175,6 +175,8 @@ class HangmanMenu:
 
             except GraphicsError:
                 sys.exit()
+            except AttributeError:
+                pass
 
 
 class Hangman:
@@ -474,8 +476,12 @@ def main(pos="None"):
                 gameCount += 1
 
             except GraphicsError:
-                HangmanMenu(pos, gameCount, score)
                 break
+            except IndexError:
+                pos = game_results[0]
+                break
+        HangmanMenu(pos, gameCount + 1, score, True)
+
     else:
         for gameCount in range(games):
             try:
@@ -491,7 +497,7 @@ def main(pos="None"):
                 else:
                     score -= 5
                     message = "game lost"
-
+                print(score)
                 if debug:
                     print(f"{message}\ngui position: {pos}")
 
@@ -500,11 +506,12 @@ def main(pos="None"):
             except IndexError:
                 pos = game_results[0]
                 break
-        HangmanMenu(pos, gameCount, score, False)
+        print(pos, gameCount + 1, score)
+        HangmanMenu(pos, gameCount + 1, score, False)
     if debug:
         print(f"score: {score} in {gameCount + 1} games ({score / (gameCount + 1) / 10})")
 
 
 if __name__ == "__main__":
-    HangmanMenu("None", 0, 0, not games == "INFINITE")
+    HangmanMenu("None", 0, 0, games == "INFINITE")
     sys.exit(0)
