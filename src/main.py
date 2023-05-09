@@ -299,7 +299,7 @@ class Hangman:
             p += 25
             if i == " ":
                 pass
-            elif strip_accents(i) in self.guessed or not i.isalpha():
+            elif strip_accents(i).lower() in self.guessed or not i.isalpha():
                 self.DisplayWord1.append(Text(Point(p, 450), i).draw(self.win))
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("white")
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(self.textsize)
@@ -311,7 +311,7 @@ class Hangman:
             p += 25
             if i == " ":
                 pass
-            elif strip_accents(i) in self.guessed or not i.isalpha():
+            elif strip_accents(i).lower() in self.guessed or not i.isalpha():
                 self.DisplayWord2.append(Text(Point(p, 530), i).draw(self.win))
                 self.DisplayWord2[len(self.DisplayWord2) - 1].setOutline("white")
                 self.DisplayWord2[len(self.DisplayWord2) - 1].setSize(self.textsize)
@@ -325,7 +325,7 @@ class Hangman:
             p += 25
             if i == " ":
                 pass
-            color = "green" if i in strip_accents(self.solution[0] + self.solution[1]) else "red"
+            color = "green" if i.lower() in strip_accents(self.solution[0] + self.solution[1]).lower() else "red"
             self.DisplayGuessed.append(Text(Point(p, 570), i).draw(self.win))
             self.DisplayGuessed[len(self.DisplayGuessed) - 1].setOutline(color)
             self.DisplayGuessed[len(self.DisplayGuessed) - 1].setSize(self.textsize)
@@ -411,7 +411,7 @@ def game(score, pos, gameCount):
             message = translations["log"]["unknown"]
         elif letter in hangman.guessed:
             message = translations["log"]["already_chose"]
-        elif letter in strip_accents(solution[0]) or letter in strip_accents(solution[1]):
+        elif letter in strip_accents(solution[0]).lower() or letter in strip_accents(solution[1]).lower():
             message = translations["log"]["correct"]
             hangman.guessed.append(letter)
         else:
@@ -427,12 +427,12 @@ def game(score, pos, gameCount):
 
         counter = 0
         for i in solution[0]:
-            if strip_accents(i) in hangman.guessed or not i.isalpha():
+            if strip_accents(i).lower() in hangman.guessed or not i.isalpha():
                 counter += 1
         if counter == len(solution[0]):
             counter = 0
             for i in solution[1]:
-                if strip_accents(i) in hangman.guessed or not i.isalpha():
+                if strip_accents(i).lower() in hangman.guessed or not i.isalpha():
                     counter += 1
             if counter == len(solution[1]):
                 hangman.success()
