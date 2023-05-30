@@ -68,7 +68,7 @@ class HangmanMenu:
             main()
             return
 
-        self.win = GraphWin("Hangman", width, height)
+        self.win = GraphWin(translations["gui"]["menuName"], width, height)
         self.win.setBackground("#121212")
 
         self.games = gameCount
@@ -186,7 +186,7 @@ class HangmanMenu:
 
 class Hangman:
     def __init__(self, solution, pos, gameCount):
-        self.win = GraphWin(translations["gui"]["gameName"].replace("[GAME]", str(gameCount)), width, height)
+        self.win = GraphWin(translations["gui"]["gameName"].replace("[GAME]", str(gameCount)), width, height, autoflush=False)
         self.win.setBackground("#121212")
 
         # Set position to middle
@@ -242,6 +242,7 @@ class Hangman:
                 text.setOutline("white")
                 text.setSize(self.textsize)
 
+        update()
         self.DisplayGuessed = []
 
     def pole(self):
@@ -260,35 +261,42 @@ class Hangman:
         p1 = Point(520, 120)
         p2 = Point(520, 150)
         Line(p1, p2).draw(self.win).setOutline("white")
+        update()
 
     def head(self):
         p1 = Point(520, 200)
         Circle(p1, 50).draw(self.win).setOutline("white")
+        update()
 
     def chest(self):
         p1 = Point(440, 250)
         p2 = Point(600, 500)
         Oval(p1, p2).draw(self.win).setOutline("white")
+        update()
 
     def arm_left(self):
         p1 = Point(570, 290)
         p2 = Point(600, 440)
         Oval(p1, p2).draw(self.win).setOutline("white")
+        update()
 
     def arm_right(self):
         p1 = Point(470, 290)
         p2 = Point(440, 440)
         Oval(p1, p2).draw(self.win).setOutline("white")
+        update()
 
     def leg_left(self):
         p1 = Point(540, 450)
         p2 = Point(580, 580)
         Oval(p1, p2).draw(self.win).setOutline("white")
+        update()
 
     def leg_right(self):
         p1 = Point(500, 450)
         p2 = Point(460, 580)
         Oval(p1, p2).draw(self.win).setOutline("white")
+        update()
 
     def display_word(self):
         for i in self.DisplayWord1:
@@ -315,6 +323,7 @@ class Hangman:
                 self.DisplayWord2.append(Text(Point(p, 530), i).draw(self.win))
                 self.DisplayWord2[len(self.DisplayWord2) - 1].setOutline("white")
                 self.DisplayWord2[len(self.DisplayWord2) - 1].setSize(self.textsize)
+        update()
 
     def display_guessed(self):
         for i in self.DisplayGuessed:
@@ -329,6 +338,7 @@ class Hangman:
             self.DisplayGuessed.append(Text(Point(p, 570), i).draw(self.win))
             self.DisplayGuessed[len(self.DisplayGuessed) - 1].setOutline(color)
             self.DisplayGuessed[len(self.DisplayGuessed) - 1].setSize(self.textsize)
+        update()
 
     def defeat(self):
         p = 10
@@ -341,6 +351,7 @@ class Hangman:
                 self.DisplayWord1.append(Text(Point(p, 450), i).draw(self.win))
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("red")
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(self.textsize)
+                update()
         p = 10
         for i in self.solution[1]:
             p += 25
@@ -351,6 +362,7 @@ class Hangman:
                 self.DisplayWord1.append(Text(Point(p, 530), i).draw(self.win))
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("red")
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(self.textsize)
+                update()
         time.sleep(1)
 
     def success(self):
@@ -364,6 +376,7 @@ class Hangman:
                 self.DisplayWord1.append(Text(Point(p, 450), i).draw(self.win))
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("green")
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(self.textsize)
+                update()
         p = 10
         for i in self.solution[1]:
             p += 25
@@ -374,6 +387,7 @@ class Hangman:
                 self.DisplayWord1.append(Text(Point(p, 530), i).draw(self.win))
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setOutline("green")
                 self.DisplayWord1[len(self.DisplayWord1) - 1].setSize(self.textsize)
+                update()
         time.sleep(1)
 
     def update_score(self, score):
@@ -381,6 +395,7 @@ class Hangman:
         self.scoreDisplay = Text(Point(50, 50), score).draw(self.win)
         self.scoreDisplay.setOutline("white")
         self.scoreDisplay.setSize(self.textsize)
+        update()
 
     def get_pos(self):
         return self.win.master.geometry()
