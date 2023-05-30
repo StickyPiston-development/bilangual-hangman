@@ -1,31 +1,31 @@
 {
   "log": {
     "args": {
-      "noneFound": "Invalid game amount: None found",
-      "invalid": "Invalid game amount: [AMOUNT]"
+      "noneFound": "Montant de jeu non valide : Aucun trouvé",
+      "invalid": "Montant du jeu invalide: [AMOUNT]"
     },
-    "exit": "Escape pressed: closing gui",
-    "unknown": "Unknown letter",
-    "already_chose": "Already choose this letter.",
-    "correct": "Correct letter",
-    "incorrect": "Incorrect letter",
-    "game_won": "game won",
-    "game_lost": "game lost"
+    "exit": "Échap pressé : fermeture de l'interface utilisateur",
+    "unknown": "Lettre inconnue",
+    "already_chose": "Choisissez déjà cette lettre.",
+    "correct": "Lettre correcte",
+    "incorrect": "Lettre incorrecte",
+    "game_won": "jeu gagnée",
+    "game_lost": "jeu perdu"
   },
   "lang1": {
-    "word": "French word:",
-    "word_x": "120"
+    "word": "Mot français:",
+    "word_x": "115"
   },
   "lang2": {
-    "word": "Dutch word:",
-    "word_x": "110"
+    "word": "Mot néerlandais:",
+    "word_x": "140"
   },
   "gui": {
-    "menuName": "Hangman Menu",
-    "gameName": "Game [GAME] - Hangman",
-    "playButtonText": "Play Hangman",
-    "exitButtonText": "Quit Hangman",
+    "menuName": "Menu de pendu",
+    "gameName": "Jeu [GAME] - Pendu",
+    "playButtonText": "Jouer",
+    "exitButtonText": "Quitter",
     "score": "Score",
-    "games": "Games"
+    "games": "Jeux"
   }
 }

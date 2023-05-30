@@ -68,7 +68,7 @@ class HangmanMenu:
             main()
             return
 
-        self.win = GraphWin("Hangman", width, height)
+        self.win = GraphWin(translations["gui"]["menuName"], width, height)
         self.win.setBackground("#121212")
 
         self.games = gameCount
